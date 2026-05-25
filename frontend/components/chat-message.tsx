@@ -1,4 +1,5 @@
 import { Copy } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useState } from 'react';
@@ -51,7 +52,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </div>
         ) : (
           <>
-            <p className="whitespace-pre-wrap">{message.content}</p>
+           <div style={{ color: 'inherit' }} className="prose prose-sm max-w-none [&_*]:text-inherit">
+  <ReactMarkdown>
+    {message.content}
+  </ReactMarkdown>
+</div>
             {!isUser && (
               <div className="flex gap-2 mt-2">
                 <Button
@@ -68,35 +73,21 @@ export function ChatMessage({ message }: ChatMessageProps) {
               </div>
             )}
             {showSources && message.sources && (
-              <Accordion type="single" collapsible className="w-full mt-2">
-                <AccordionItem value="sources" className="border-b-0">
-                  <AccordionTrigger className="text-sm py-2 justify-start gap-2 hover:no-underline">
-                    View Sources ({message.sources.length})
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {message.sources?.map((source, index) => (
-                        <Card
-                          key={index}
-                          className="bg-background/50 transition-all duration-200 hover:bg-background hover:shadow-md hover:scale-[1.02] cursor-pointer"
-                        >
-                          <CardContent className="p-3">
-                            <p className="text-sm font-medium truncate">
-                              {source.metadata?.source ||
-                                source.metadata?.filename ||
-                                'N/A'}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              Page {source.metadata?.loc?.pageNumber || 'N/A'}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            )}
+  <p className="text-xs text-muted-foreground mt-2 italic">
+    📄 Refer:{' '}
+    {Array.from(
+      new Set(
+        message.sources.map(
+          (s) => `p.${s.metadata?.loc?.pageNumber || '?'}`
+        )
+      )
+    ).join(', ')}{' '}
+    of{' '}
+    {message.sources[0]?.metadata?.source
+      ? message.sources[0].metadata.source.split('/').pop()
+      : 'uploaded PDF'}
+  </p>
+)}
           </>
         )}
       </div>

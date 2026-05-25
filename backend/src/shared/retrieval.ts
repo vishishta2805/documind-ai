@@ -1,6 +1,6 @@
 import { VectorStoreRetriever } from '@langchain/core/vectorstores';
-import { OpenAIEmbeddings } from '@langchain/openai';
 import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
+import { CohereEmbeddings } from '@langchain/cohere';
 import { createClient } from '@supabase/supabase-js';
 import { RunnableConfig } from '@langchain/core/runnables';
 import {
@@ -16,8 +16,9 @@ export async function makeSupabaseRetriever(
       'SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables are not defined',
     );
   }
-  const embeddings = new OpenAIEmbeddings({
-    model: 'text-embedding-3-small',
+  const embeddings = new CohereEmbeddings({
+    apiKey: process.env.COHERE_API_KEY,
+    model: 'embed-english-v3.0',
   });
   const supabaseClient = createClient(
     process.env.SUPABASE_URL ?? '',
