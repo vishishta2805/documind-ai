@@ -162,4 +162,4 @@ git push origin feature-name
 
 ## 📜 License
 
-MIT License — see the LICENSE file for details.
+MIT License — see the [LICENSE](./LICENSE) file for details.
